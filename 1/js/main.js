@@ -2,6 +2,8 @@ const T_PRECISION = 20;
 var svg;	// 360x640
 var arrItems = [];
 var yPos = [];
+var arrMes = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", 
+	"Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 
 window.addEventListener("DOMContentLoaded", function() {
@@ -13,7 +15,8 @@ window.addEventListener("DOMContentLoaded", function() {
 async function main(){
 	var maxVal = 0;
 	for (var i=json.dates.length-2; i>=0; i--){
-		document.getElementById("fecha").innerHTML = json.dates[i];
+		var arrDate = json.dates[i].split("M");
+		document.getElementById("fecha").innerHTML = arrDate[0]+" "+arrMes[Number.parseInt(arrDate[1])-1];
 		var arrVal = [];
 		for (var serie=0; serie<arrItems.length; serie++){
 			arrVal[serie] = json.data[serie][i];
@@ -22,6 +25,7 @@ async function main(){
 		var maxVal = json.data[arrSortedKeys[0]][i];
 		for (var serie=0; serie<arrItems.length; serie++){
 			var val = json.data[serie][i];
+			arrItems[serie].newVal(val);
 			arrItems[serie].change(null, yPos[arrSortedKeys.indexOf(serie)], 
 				(val/maxVal)*svg.width-2*svg.margin, null, 500);
 		}
@@ -40,7 +44,8 @@ function setup(){
 
 	for (var i=0; i<json.names.length; i++){
 		yPos[i] = 4*margin+33*i;
-		arrItems[i] = new Item(i, margin, yPos[i], 0.5*w-2*margin, 30, json.names[i]);
+		var r = Math.random()*4+1;
+		arrItems[i] = new Item(i, margin, yPos[i], 0.5*w-2*margin, 30, json.names[i], 'rgb('+r*64+',0,'+(63+16*i)+')');
 	}
 	svg.text("fecha", 4*margin, 2*margin, "", "grey", "1rem", "bold", "");
 	svg.text("titulo", 2*margin, 2*margin, "", "black", "2rem", "bold", "");
